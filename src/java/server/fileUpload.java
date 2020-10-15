@@ -63,7 +63,9 @@ public class fileUpload extends HttpServlet {
             String type  = "";
             long size =0;
             InputStream streamfile = null;       
-
+            String state_of_file = request.getParameter("public_private");
+            System.out.println("State " +state_of_file);
+            
             Part file = request.getPart("file");
             if (file != null){
                  name = file.getName();
@@ -75,11 +77,12 @@ public class fileUpload extends HttpServlet {
             System.out.println("file : " + name +" "+type+" "+size);
             
             if (file != null & file.getSize() != 0) {
-                          query = "insert into FILES values(?,?,?)";
+                          query = "insert into FILES values(?,?,?,?)";
                           statement = connection.prepareStatement(query);
                           statement.setString(1, "aaa");
                           statement.setBlob(2, streamfile);
                           statement.setString(3, "normal");
+                          statement.setString(4,state_of_file);
                           statement.executeUpdate(); 
                           response.sendRedirect("userPage.jsp");
                   
