@@ -20,7 +20,6 @@
     <style>
     </style>
     <body>
-            <br>
           <%
          //allow access only if session exists
          String user = null;
@@ -39,6 +38,9 @@
          %>
          <nav class="navbar navbar-light bg-light justify-content-between">
             <a class="navbar-brand">Application</a>
+            <form class="form-inline" action="newsfeed" method="get">
+              <button class="btn btn-outline-success my-2 my-sm-0" value="Main" >MainPage</button>
+            </form>
             <form class="form-inline" action="LogoutServlet" method="post">
               <button class="btn btn-outline-success my-2 my-sm-0" value="Logout" type="submit">Logout</button>
             </form>
