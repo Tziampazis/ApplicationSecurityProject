@@ -50,8 +50,8 @@ public class registerUser extends HttpServlet {
             */            
 
 
-            String username = request.getParameter("usernameR");
-            String password = request.getParameter("passwordR");
+                String username = request.getParameter("username");
+            String password = request.getParameter("password");
             System.out.println("Username re : " + username);
             System.out.println(password);
             

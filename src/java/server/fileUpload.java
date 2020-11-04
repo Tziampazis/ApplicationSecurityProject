@@ -40,7 +40,7 @@ public class fileUpload extends HttpServlet {
        SessionTracking sessionTracking = new SessionTracking("");
         
         
-      if (SessionTracking.checkTimeValid(request.getSession().getCreationTime(),request.getSession().getLastAccessedTime(),request.getSession().getMaxInactiveInterval())){
+//      if (SessionTracking.checkTimeValid(request.getSession().getCreationTime(),request.getSession().getLastAccessedTime(),request.getSession().getMaxInactiveInterval())){
           System.out.println("Session Valid");
           System.out.println(request.getSession().getId());
 
@@ -77,10 +77,10 @@ public class fileUpload extends HttpServlet {
             System.out.println("file : " + name +" "+type+" "+size);
             
             if (file != null & file.getSize() != 0) {
-                          query = "insert into FILES values(?,?,?,?)";
+                          query = "insert into files (uploadedfile, usr, status, permission) values(?, ?, ?, ?)";
                           statement = connection.prepareStatement(query);
-                          statement.setString(1, "aaa");
-                          statement.setBlob(2, streamfile);
+                          statement.setBlob(1, streamfile);
+                          statement.setString(2, "aaa");
                           statement.setString(3, "normal");
                           statement.setString(4,state_of_file);
                           statement.executeUpdate(); 
@@ -97,16 +97,16 @@ public class fileUpload extends HttpServlet {
                 if (connection != null) {
                     connection.close();
                 }
-            } catch (SQLException e) {
+            } catch (Exception e) {
                 // connection close failed.
                 System.err.println(e.getMessage());
             }
         }
-    }else{
-          System.out.println("Session Ended");
-          request.getSession(false).invalidate();
-          response.sendRedirect("index.jsp");
-      }
+//    }else{
+//          System.out.println("Session Ended");
+//          request.getSession(false).invalidate();
+//          response.sendRedirect("index.jsp");
+//      }
       
       
     }
