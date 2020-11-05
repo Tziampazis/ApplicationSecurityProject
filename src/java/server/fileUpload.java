@@ -37,59 +37,57 @@ public class fileUpload extends HttpServlet {
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-       SessionTracking sessionTracking = new SessionTracking("");
-        
-        
-//      if (SessionTracking.checkTimeValid(request.getSession().getCreationTime(),request.getSession().getLastAccessedTime(),request.getSession().getMaxInactiveInterval())){
-          System.out.println("Session Valid");
-          System.out.println(request.getSession().getId());
+        SessionTracking sessionTracking = new SessionTracking("");
 
-      
+//      if (SessionTracking.checkTimeValid(request.getSession().getCreationTime(),request.getSession().getLastAccessedTime(),request.getSession().getMaxInactiveInterval())){
+        System.out.println("Session Valid");
+        System.out.println(request.getSession().getId());
+
         Connection connection = null;
         response.setContentType("text/html;charset=UTF-8");
-        try (PrintWriter out = response.getWriter()) {        
+        try (PrintWriter out = response.getWriter()) {
             String query;
             PreparedStatement statement;
-            
+
             Class.forName("org.apache.derby.jdbc.ClientDriver");
 
             // create a database connection
             connection = DriverManager.getConnection("jdbc:derby://localhost:1527/security;user=security;password=security");
-            
+
             /*
             // SQL Commands to create the database can be found in file database.sql		 		  
-            */            
+             */
             String name = "";
-            String type  = "";
-            long size =0;
-            InputStream streamfile = null;       
+            String type = "";
+            long size = 0;
+            InputStream streamfile = null;
             String state_of_file = request.getParameter("public_private");
-            System.out.println("State " +state_of_file);
-            
+            System.out.println("State " + state_of_file);
+
             Part file = request.getPart("file");
-            if (file != null){
-                 name = file.getName();
-                 type = file.getContentType();
-                 size = file.getSize();
-                 streamfile = file.getInputStream();
+            if (file != null) {
+                name = file.getName();
+                type = file.getContentType();
+                size = file.getSize();
+                streamfile = file.getInputStream();
             }
-            
-            System.out.println("file : " + name +" "+type+" "+size);
-            
+
+            System.out.println("file : " + name + " " + type + " " + size);
+
             if (file != null & file.getSize() != 0) {
-                          query = "insert into files (uploadedfile, usr, status, permission) values(?, ?, ?, ?)";
-                          statement = connection.prepareStatement(query);
-                          statement.setBlob(1, streamfile);
-                          statement.setString(2, "aaa");
-                          statement.setString(3, "normal");
-                          statement.setString(4,state_of_file);
-                          statement.executeUpdate(); 
-                          response.sendRedirect("userPage.jsp");
-                  
-            }else{
-                  response.sendRedirect("userPage.jsp");
-              }
-            
+                query = "insert into files (uploadedfile, usr, status, permission) values(?, ?, ?, ?)";
+                statement = connection.prepareStatement(query);
+                statement.setBlob(1, streamfile);
+                statement.setString(2, "aaa");
+                statement.setString(3, "normal");
+                statement.setString(4, state_of_file);
+                statement.executeUpdate();
+                response.sendRedirect("userPage.jsp");
+
+            } else {
+                response.sendRedirect("userPage.jsp");
+            }
+
         } catch (Exception e) {
             System.err.println(e.getMessage());
         } finally {
@@ -107,8 +105,7 @@ public class fileUpload extends HttpServlet {
 //          request.getSession(false).invalidate();
 //          response.sendRedirect("index.jsp");
 //      }
-      
-      
+
     }
 
     /**
@@ -120,6 +117,5 @@ public class fileUpload extends HttpServlet {
     public String getServletInfo() {
         return "Short description";
     }// </editor-fold>
- 
 
 }

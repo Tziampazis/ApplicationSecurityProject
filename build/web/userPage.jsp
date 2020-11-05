@@ -3,8 +3,13 @@
     Created on : Oct 4, 2020, 1:11:46 PM
     Author     : Christodoulos
 --%>
+
+<%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>  
+<%@page import="java.util.List"%>
+<%@page import="java.util.ArrayList"%>
+<%@page import="util.File"%>
 <%@page import="java.util.concurrent.TimeUnit"%>
-<%@page import="java.util.Date"%>
+<%@page import="java.util.Date"%>   
 
 <%@page contentType="text/html" pageEncoding="UTF-8"%>
 <!DOCTYPE html>
@@ -20,51 +25,78 @@
     <style>
     </style>
     <body>
-          <%
-         //allow access only if session exists
-         String user = null;
-         if(session.getAttribute("user") == null){
-                 response.sendRedirect("index.jsp");
-         }else user = (String) session.getAttribute("user");
-         String userName = null;
-         String sessionID = null;
-         Cookie[] cookies = request.getCookies(); 
-        if(cookies !=null){
-         for(Cookie cookie : cookies){
-                 if(cookie.getName().equals("user")) userName = cookie.getValue();
-                 if(cookie.getName().equals("JSESSIONID")) sessionID = cookie.getValue();
-         }
-         }
-         %>
-         <nav class="navbar navbar-light bg-light justify-content-between">
+        <%
+            //allow access only if session exists
+            String user = null;
+            if (session.getAttribute("user") == null) {
+                response.sendRedirect("index.jsp");
+            } else {
+                user = (String) session.getAttribute("user");
+            }
+            String userName = null;
+            String sessionID = null;
+            Cookie[] cookies = request.getCookies();
+            if (cookies != null) {
+                for (Cookie cookie : cookies) {
+                    if (cookie.getName().equals("user")) {
+                        userName = cookie.getValue();
+                    }
+                    if (cookie.getName().equals("JSESSIONID")) {
+                        sessionID = cookie.getValue();
+                    }
+                }
+            }
+
+        %>
+        <nav class="navbar navbar-light bg-light justify-content-between">
             <a class="navbar-brand">Application</a>
             <form class="form-inline" action="newsfeed" method="get">
-              <button class="btn btn-outline-success my-2 my-sm-0" value="Main" >MainPage</button>
+                <button class="btn btn-outline-success my-2 my-sm-0" value="Main" >MainPage</button>
             </form>
             <form class="form-inline" action="LogoutServlet" method="post">
-              <button class="btn btn-outline-success my-2 my-sm-0" value="Logout" type="submit">Logout</button>
+                <button class="btn btn-outline-success my-2 my-sm-0" value="Logout" type="submit">Logout</button>
             </form>
-          </nav>
-         
-         <div class="container">
+        </nav>
+
+        <div class="container">
             <div class="row">
-            Hi <%=userName %>, Your Session ID=<%=sessionID %>           
+                Hi <%=userName%>, Your Session ID=<%=sessionID%>           
             </div>
-                <br>
-                <div class="row">
-                    <div class="col-4">
-                        <button class="btn btn-outline-success my-2 my-sm-0" type="submit">Show Files</button>
-                        <br>
+            <br>
+            <div class="row">
+                <div class="col-4">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>User</th>
+                                <th>Permission</th>
+                                <th>Status</th>
+                            </tr>
+                        </thead>
+
+                        <tbody>
+                            <c:forEach items="${fileList}" var="file">
+                                <tr>
+                                    <td>${file.user}</td>
+                                    <td>${file.permission}</td>
+                                    <td>${file.status}</td>
+                                </tr>
+                            </c:forEach>   
+                        </tbody>
+                    </table>
+                    <br>
+                    <form method="GET" action="DownloadFile" enctype="multipart/form-data" >
                         <button class="btn btn-outline-success my-2 my-sm-0" type="submit">Download Files</button>
-                    </div>
-                    <div class="col-8">
-                        <form method="POST" action="fileUpload" enctype="multipart/form-data" >
-                            File:
-                            <br>
-                            <input type="file" name="file"/> 
-                            <br>
-                            <button class="btn btn-outline-success my-2 my-sm-0" type="submit" value="upload" name="upload">Upload File</button>
-                            <br>
+                    </form>
+                </div>
+                <div class="col-8">
+                    <form method="POST" action="fileUpload" enctype="multipart/form-data" >
+                        File:
+                        <br>
+                        <input type="file" name="file"/> 
+                        <br>
+                        <button class="btn btn-outline-success my-2 my-sm-0" type="submit" value="upload" name="upload">Upload File</button>
+                        <br>
                         <label for="cars">Document Status</label>
                         <br>
                         <div class="custom-control custom-radio">
@@ -75,12 +107,10 @@
                             <input type="radio" id="customRadio2" name="public_private" value="public" class="custom-control-input">
                             <label class="custom-control-label" name="public_private" value="public" for="customRadio2">Public</label>
                         </div>
-                        </form>
+                    </form>
 
-                    </div>
                 </div>
-         </div>
-         
-       
+            </div>
+        </div>
     </body>
 </html>
