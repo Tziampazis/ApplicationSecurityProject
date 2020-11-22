@@ -5,8 +5,40 @@
         <title>Success</title>
         <meta charset="UTF-8">
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <script src="https://apis.google.com/js/platform.js" async defer></script>
+        <meta name="google-signin-client_id" content="673492077692-d0it5938e4bm0j2paccl2qekqq21bdbu.apps.googleusercontent.com">
     </head>
     <body>
-        <div>Congratulations, you can access the content</div>
+          <div id="email"> </div>
+          <div id="name"> </div>
+          
+          <form id="theForm" method="POST" action="GoogleAuthServlet">
+              <input type="hidden" id="custId" name="custId"> 
+              <button class="g-signin2" data-onsuccess="hello" type="submit"></button>
+          </form>
+
+          <button onclick="signOut()">sign out</button>
+          <script>
+              function hello(googleUser){
+                  var id_token = googleUser.getAuthResponse().id_token;
+                  console.log(id_token);    
+                  var hidden = JSON.stringify(id_token);
+//                  var profile = googleUser.getBasicProfile();
+//                  console.log(JSON.stringify(profile));
+//                  var email = document.querySelector("#email");
+//                  email.innerText= googleUser.getBasicProfile().getEmail();
+//                  var name = document.querySelector("#name");
+//                  name.innerText= googleUser.getBasicProfile().getGivenName();
+                    document.getElementById("custId").value = id_token;
+                    document.getElementById('theForm').submit();
+                    form.submit();
+                  }
+              
+              function signOut(){
+                  gapi.auth2.getAuthInstance().signOut().then(function () {
+                      console.log("SIGN OUT");
+                  });
+              }
+        </script>
     </body>
 </html>

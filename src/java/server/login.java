@@ -79,20 +79,6 @@ public class login extends HttpServlet {
                             //response.setHeader("Set-Cookie", "key=value; HttpOnly; SameSite=strict");
                             response.sendRedirect("userPage.jsp");
                       
-//                        HttpSession session;
-//                        session = request.getSession(true);
-//                        System.out.println(session.getId());
-//                        session.setAttribute("user",username );
-//                        session.setMaxInactiveInterval(30);
-//                        System.out.println( "session " +session.getMaxInactiveInterval() );
-//                        Date date1 = new Date(session.getCreationTime());
-//                        System.out.println(session.getCreationTime());
-//                        
-//                        Date date = new Date(session.getLastAccessedTime());
-//                        System.out.println(date);
-//
-//                        String na = (String) session.getAttribute("user");
-//                        System.out.println(na);
                         response.sendRedirect("userPage.jsp");
                     } else {
                         response.sendRedirect("index.jsp");
