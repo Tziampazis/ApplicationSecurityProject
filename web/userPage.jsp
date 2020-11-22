@@ -64,24 +64,29 @@
             </div>
             <br>
             <div class="row">
-                <div class="col-4">
-                    <table>
+                <div class="col-6">
+                    <table class="table">
                         <thead>
                             <tr>
-                                <th>User</th>
-                                <th>Permission</th>
-                                <th>Status</th>
+                                <th scope="col">User</th>
+                                <th scope="col">Permission</th>
+                                <th scope="col">Status</th>
+                                <th scope="col">Operation</th>
                             </tr>
                         </thead>
-
                         <tbody>
                             <c:forEach items="${fileList}" var="file">
                                 <tr>
-                                    <td>${file.user}</td>
+                                    <th scope="row">${file.user}</th>
                                     <td>${file.permission}</td>
                                     <td>${file.status}</td>
+                                    <td>
+                                        <button type="button" class="btn btn-primary" id="btnDownload">Download</button>
+                                        <button type="button" class="btn btn-danger" id="btnRemove">Remove</button>
+                                    </td>
                                 </tr>
                             </c:forEach>   
+
                         </tbody>
                     </table>
                     <br>
@@ -89,7 +94,7 @@
                         <button class="btn btn-outline-success my-2 my-sm-0" type="submit">Download Files</button>
                     </form>
                 </div>
-                <div class="col-8">
+                <div class="col-6">
                     <form method="POST" action="fileUpload" enctype="multipart/form-data" >
                         File:
                         <br>
@@ -112,5 +117,17 @@
                 </div>
             </div>
         </div>
+        <script>
+            $(document).ready(function () {
+                $("#btnDownload").click(function () {
+                    var name = $('#userName').val();
+                    $.get('GetUserServlet', {
+                        : name
+                    }, function (responseText) {
+                        $('#ajaxGetUserServletResponse').text(responseText);
+                    });
+                });
+            });
+        </script>
     </body>
 </html>

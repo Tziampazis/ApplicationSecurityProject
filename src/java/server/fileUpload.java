@@ -5,14 +5,15 @@
  */
 package server;
 
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.PrintWriter;
+import java.io.*;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.Base64;
+import javax.crypto.Cipher;
+import javax.crypto.SecretKey;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.MultipartConfig;
 import javax.servlet.annotation.WebServlet;
@@ -20,11 +21,21 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.Part;
-import util.hashpassword;
+
+import java.util.Base64;
+
+import javax.crypto.Cipher;
+import javax.crypto.KeyGenerator;
+import javax.crypto.SecretKey;
+import sun.misc.BASE64Encoder;
 
 @WebServlet(name = "fileUpload", urlPatterns = {"/fileUpload"})
 @MultipartConfig
 public class fileUpload extends HttpServlet {
+
+    final String SaveLocation = "C:\\temp";
+    static Cipher cipher;
+    Connection connection = null;
 
     /**
      * Handles the HTTP <code>POST</code> method.
@@ -43,50 +54,22 @@ public class fileUpload extends HttpServlet {
         System.out.println("Session Valid");
         System.out.println(request.getSession().getId());
 
-        Connection connection = null;
         response.setContentType("text/html;charset=UTF-8");
         try (PrintWriter out = response.getWriter()) {
-            String query;
             PreparedStatement statement;
 
             Class.forName("org.apache.derby.jdbc.ClientDriver");
-
             // create a database connection
             connection = DriverManager.getConnection("jdbc:derby://localhost:1527/security;user=security;password=security");
 
-            /*
-            // SQL Commands to create the database can be found in file database.sql		 		  
-             */
-            String name = "";
-            String type = "";
-            long size = 0;
-            InputStream streamfile = null;
             String state_of_file = request.getParameter("public_private");
-            System.out.println("State " + state_of_file);
-
             Part file = request.getPart("file");
-            if (file != null) {
-                name = file.getName();
-                type = file.getContentType();
-                size = file.getSize();
-                streamfile = file.getInputStream();
-            }
+            String name = file.getSubmittedFileName();
 
-            System.out.println("file : " + name + " " + type + " " + size);
-
-            if (file != null & file.getSize() != 0) {
-                query = "insert into files (uploadedfile, usr, status, permission) values(?, ?, ?, ?)";
-                statement = connection.prepareStatement(query);
-                statement.setBlob(1, streamfile);
-                statement.setString(2, "aaa");
-                statement.setString(3, "normal");
-                statement.setString(4, state_of_file);
-                statement.executeUpdate();
-                response.sendRedirect("userPage.jsp");
-
-            } else {
-                response.sendRedirect("userPage.jsp");
-            }
+            String filePath = SaveLocation + "\\" + name;
+            Encrypt(file, filePath);
+            InsertToDB(state_of_file, filePath);
+            response.sendRedirect("userPage.jsp");
 
         } catch (Exception e) {
             System.err.println(e.getMessage());
@@ -100,14 +83,48 @@ public class fileUpload extends HttpServlet {
                 System.err.println(e.getMessage());
             }
         }
-//    }else{
-//          System.out.println("Session Ended");
-//          request.getSession(false).invalidate();
-//          response.sendRedirect("index.jsp");
-//      }
-
     }
 
+    public void InsertToDB(String state_of_file, String filePath)
+            throws SQLException {
+        String query = "insert into files (uploadedfile, usr, status, permission) values(?, ?, ?, ?)";
+        PreparedStatement statement = connection.prepareStatement(query);
+        statement = connection.prepareStatement(query);
+        statement.setString(1, filePath);
+        statement.setString(2, "aaa");
+        statement.setString(3, "active");
+        statement.setString(4, state_of_file);
+        statement.executeUpdate();
+    }
+
+    public void Encrypt(Part file, String filePath)
+            throws Exception {
+        String name = file.getSubmittedFileName();
+        BASE64Encoder encoder = new BASE64Encoder();
+        File encryptedFile = new File(filePath);
+        FileOutputStream fos = new FileOutputStream(encryptedFile.getAbsoluteFile());
+        InputStream inputStream = file.getInputStream();
+        encoder.encode(inputStream, fos);
+    }
+
+//    private void SaveFile(String filePath, InputStream inputStream) {
+//        try {
+//            OutputStream os = new FileOutputStream(filePath);
+//
+//            byte[] buffer = new byte[1024];
+//            int bytesRead;
+//            //read from is to buffer
+//            while ((bytesRead = inputStream.read(buffer)) != -1) {
+//                os.write(buffer, 0, bytesRead);
+//            }
+//            inputStream.close();
+//            //flush OutputStream to write any buffered data to file
+//            os.flush();
+//            os.close();
+//        } catch (IOException e) {
+//            e.printStackTrace();
+//        }
+//    }
     /**
      * Returns a short description of the servlet.
      *
