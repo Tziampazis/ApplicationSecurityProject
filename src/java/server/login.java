@@ -47,7 +47,7 @@ public class login extends HttpServlet {
 
             // create a database connection
             connection = DriverManager.getConnection("jdbc:derby://localhost:1527/security;user=security;password=security");
-            
+
 
             query = "select username,password from userDB where username = ?";
 
@@ -70,12 +70,13 @@ public class login extends HttpServlet {
 
                     if (rs.getString("username").equals(username) & hashpassword.checkSHApassword(password,rs.getString("password"))) {
                             HttpSession session = request.getSession();
-                            session.setAttribute("user", "Pankaj");
+                            session.setAttribute("user", username);
                             //setting session to expiry in 30 mins
                             session.setMaxInactiveInterval(30);
                             Cookie userName = new Cookie("user", username);
                             userName.setMaxAge(30*60);
                             response.addCookie(userName);
+                            //response.setHeader("Set-Cookie", "key=value; HttpOnly; SameSite=strict");
                             response.sendRedirect("userPage.jsp");
                       
 //                        HttpSession session;

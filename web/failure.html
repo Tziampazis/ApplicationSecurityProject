@@ -5,8 +5,20 @@
         <title>Failure</title>
         <meta charset="UTF-8">
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
+          <script src="https://apis.google.com/js/platform.js" async defer></script>
+          <script src="https://apis.google.com/js/api.js"></script>
+        <meta name="google-signin-client_id" content="673492077692-d0it5938e4bm0j2paccl2qekqq21bdbu.apps.googleusercontent.com">
     </head>
     <body>
-        <div>Sorry, you are not the proper user</div>
+        <button onclick="signoutg()">Sign out</button>
+        <script>
+          function signoutg() {
+            var auth2 = gapi.auth2.getAuthInstance();
+            auth2.signOut().then(function () {
+              document.write('User signed out.');
+            });
+          }
+        </script>
+
     </body>
 </html>

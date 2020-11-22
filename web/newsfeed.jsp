@@ -19,7 +19,9 @@
     <body>
         <nav class="navbar navbar-light bg-light justify-content-between">
             <a class="navbar-brand">Application</a>
-            
+             <form class="form-inline" action="userPage" method="get">
+              <button class="btn btn-outline-success my-2 my-sm-0" value="Main" >User Page</button>
+            </form>
             <form class="form-inline" action="LogoutServlet" method="post">
               <button class="btn btn-outline-success my-2 my-sm-0" value="Logout" type="submit">Logout</button>
             </form>
