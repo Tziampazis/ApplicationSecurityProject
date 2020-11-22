@@ -16,19 +16,12 @@ import javax.servlet.http.HttpServletResponse;
  *
  * @author Christodoulos
  */
-@WebServlet(name = "newsfeed", urlPatterns = {"/newsfeed"})
-public class mainPage extends HttpServlet{
+@WebServlet(name = "userPage", urlPatterns = {"/userPage"})
+public class userServlet extends HttpServlet{
     
-    /**
-     *
-     * @param request
-     * @param response
-     * @throws ServletException
-     * @throws IOException
-     */
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-        response.sendRedirect("newsfeed.jsp");
+        response.sendRedirect("userPage.jsp");
     }
     
     
@@ -40,5 +33,4 @@ public class mainPage extends HttpServlet{
     
     
     }
-    
 }
