@@ -33,29 +33,26 @@ public class registerUser extends HttpServlet {
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-        
+
         Connection connection = null;
         response.setContentType("text/html;charset=UTF-8");
-        try (PrintWriter out = response.getWriter()) {        
+        try (PrintWriter out = response.getWriter()) {
             String query;
             PreparedStatement statement;
-            
+
             Class.forName("org.apache.derby.jdbc.ClientDriver");
 
             // create a database connection
             connection = DriverManager.getConnection("jdbc:derby://localhost:1527/security;user=security;password=security");
-            
+
             /*
             // SQL Commands to create the database can be found in file database.sql		 		  
-            */            
-
-
-            String username = request.getParameter("usernameR");
-            String password = request.getParameter("passwordR");
+             */
+            String username = request.getParameter("username");
+            String password = request.getParameter("password");
             System.out.println("Username re : " + username);
             System.out.println(password);
-            
-            
+
             query = "select username from userDB where username = ?";
 
             statement = connection.prepareStatement(query);
@@ -72,25 +69,24 @@ public class registerUser extends HttpServlet {
                     exist = true;
                 }
             }
-            
-            
+
             System.out.println("Username exist : " + exist);
 
-            if (!exist){
+            if (!exist) {
                 if (username != null && !username.isEmpty() && password != null && !password.isEmpty()) {
-                          String hashpass = hashpassword.hashString(password);
-                          query = "insert into userDB values(?, ?, ?)";
-                          statement = connection.prepareStatement(query);
-                          statement.setString(1, username);
-                          statement.setString(2, hashpass);    
-                          statement.setString(3, "normal");
-                          statement.executeUpdate(); 
-                          response.sendRedirect("index.jsp");
-                  }
-            }else {
-                  response.sendRedirect("failure.html");
-              }
-            
+                    String hashpass = hashpassword.hashString(password);
+                    query = "insert into userDB values(?, ?, ?)";
+                    statement = connection.prepareStatement(query);
+                    statement.setString(1, username);
+                    statement.setString(2, hashpass);
+                    statement.setString(3, "normal");
+                    statement.executeUpdate();
+                    response.sendRedirect("index.jsp");
+                }
+            } else {
+                response.sendRedirect("failure.html");
+            }
+
         } catch (Exception e) {
             System.err.println(e.getMessage());
         } finally {
@@ -114,6 +110,5 @@ public class registerUser extends HttpServlet {
     public String getServletInfo() {
         return "Short description";
     }// </editor-fold>
- 
 
 }
