@@ -5,10 +5,9 @@
  */
 package server;
 
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.OutputStream;
-import java.io.PrintWriter;
+import java.io.*;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.sql.Blob;
 import java.sql.Connection;
 import java.sql.DriverManager;
@@ -26,8 +25,16 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
-import util.File;
+import javax.servlet.http.Part;
+import sun.misc.BASE64Encoder;
 import util.hashpassword;
+
+import javax.crypto.Cipher;
+import javax.crypto.KeyGenerator;
+import javax.crypto.SecretKey;
+import javax.servlet.http.HttpSession;
+import sun.misc.BASE64Decoder;
+import sun.misc.BASE64Encoder;
 
 /**
  *
@@ -37,6 +44,7 @@ import util.hashpassword;
 public class DownloadFile extends HttpServlet {
 
     private static final int BUFFER_SIZE = 4096;
+    Connection connection = null;
 
     // <editor-fold defaultstate="collapsed" desc="HttpServlet methods. Click on the + sign on the left to edit the code.">
     /**
@@ -50,59 +58,55 @@ public class DownloadFile extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-        request.getSession(false).invalidate();
-        Connection connection = null;
-        response.setContentType("text/html;charset=UTF-8");
-        try (PrintWriter out = response.getWriter()) {
+        try (OutputStream outStream = response.getOutputStream()) {
+            String user = null;
+            HttpSession session = request.getSession();
+            if (session.getAttribute("user") == null) {
+                response.sendRedirect("index.jsp");
+            } else {
+                user = (String) session.getAttribute("user");
+            }
+
             Class.forName("org.apache.derby.jdbc.ClientDriver");
+
             // create a database connection
             connection = DriverManager.getConnection("jdbc:derby://localhost:1527/security;user=security;password=security");
-            String query = "select username,password from userDB where username = ?";
-            List<InputStream> inputStreams = new ArrayList<InputStream>();
-            String queryFile = "select * from SECURITY.FILES";
-            PreparedStatement statementFile = connection.prepareStatement(queryFile);
-            ResultSet rsFile = statementFile.executeQuery();
 
-            while (rsFile.next()) {
-                String userFile = rsFile.getString("usr");
-                String permissionFile = rsFile.getString("permission");
-                String statusFile = rsFile.getString("status");
-                Blob blobFile = (Blob) rsFile.getBlob("uploadedFile");
-                InputStream inputStream= blobFile.getBinaryStream();
+            String fileIdStr = request.getParameter("fileId");
+            int fileId = Integer.parseInt(fileIdStr);
+            util.File dbFile = GetFile(fileId);
+            byte[] decodedFile = Decode(dbFile.getUploadedFile());
+            ByteArrayInputStream bis = new ByteArrayInputStream(decodedFile);
+            int fileLength = bis.available();
+            System.out.println("fileLength = " + fileLength);
 
-                int fileLength = inputStream.available();
+            ServletContext context = getServletContext();
 
-                System.out.println("fileLength = " + fileLength);
-
-                ServletContext context = getServletContext();
-
-                // sets MIME type for the file download
-                String fileName = "aa.jpg";
-                String mimeType = context.getMimeType(fileName);
-                if (mimeType == null) {
-                    mimeType = "application/octet-stream";
-                }
-
-                // set content properties and header attributes for the response
-                response.setContentType(mimeType);
-                response.setContentLength(fileLength);
-                String headerKey = "Content-Disposition";
-                String headerValue = String.format("attachment; filename=\"%s\"", fileName);
-                response.setHeader(headerKey, headerValue);
-
-                // writes the file to the client
-                OutputStream outStream = response.getOutputStream();
-
-                byte[] buffer = new byte[BUFFER_SIZE];
-                int bytesRead = -1;
-
-                while ((bytesRead = inputStream.read(buffer)) != -1) {
-                    outStream.write(buffer, 0, bytesRead);
-                }
-
-                inputStream.close();
-                outStream.close();
+            // sets MIME type for the file download
+            Path path = Paths.get(dbFile.getUploadedFile());
+            Path fileName = path.getFileName();
+            String mimeType = context.getMimeType(fileName.toString());
+            if (mimeType == null) {
+                mimeType = "application/octet-stream";
             }
+
+            // set content properties and header attributes for the response
+            response.setContentType(mimeType);
+            response.setContentLength(fileLength);
+            String headerKey = "Content-Disposition";
+            String headerValue = String.format("attachment; filename=\"%s\"", fileName);
+            response.setHeader(headerKey, headerValue);
+
+            // writes the file to the client
+            byte[] buffer = new byte[BUFFER_SIZE];
+            int bytesRead = -1;
+
+            while ((bytesRead = bis.read(buffer)) != -1) {
+                outStream.write(buffer, 0, bytesRead);
+            }
+
+            bis.close();
+            outStream.close();
 
         } catch (Exception e) {
             System.err.println(e.getMessage());
@@ -118,14 +122,38 @@ public class DownloadFile extends HttpServlet {
         }
     }
 
-    /**
-     * Returns a short description of the servlet.
-     *
-     * @return a String containing servlet description
-     */
-    @Override
-    public String getServletInfo() {
-        return "Short description";
-    }// </editor-fold>
+    private util.File GetFile(int id) throws SQLException {
+        String query = "select id, usr, permission, status, uploadedFile from SECURITY.FILES where id=?";
+        PreparedStatement statement = connection.prepareStatement(query);
+
+        String idStr = String.valueOf(id);
+        statement.setString(1, idStr);
+        ResultSet rsFile = statement.executeQuery();
+
+        util.File result = null;
+        while (rsFile.next()) {
+            String userFile = rsFile.getString("usr");
+            String permissionFile = rsFile.getString("permission");
+            String statusFile = rsFile.getString("status");
+            String uploadedFile = rsFile.getString("uploadedFile");
+
+            String idStrRes = rsFile.getString("id");
+            int idRes = Integer.parseInt(idStrRes);
+
+            result = new util.File(idRes, userFile, permissionFile, statusFile, uploadedFile);
+            break;
+        }
+
+        return result;
+    }
+
+    public byte[] Decode(String filePath)
+            throws Exception {
+        File file = new File(filePath);
+        BASE64Decoder decoder = new BASE64Decoder();
+        byte[] fileDecoded = decoder.decodeBuffer(new FileInputStream(file.getAbsolutePath()));
+
+        return fileDecoded;
+    }
 
 }
