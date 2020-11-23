@@ -48,7 +48,7 @@
                     <table class="table">
                         <thead>
                             <tr>
-                                <th scope="col">User</th>
+                                <th scope="col">Name</th>
                                 <th scope="col">Permission</th>
                                 <th scope="col">Status</th>
                                 <th scope="col">Operation</th>
@@ -57,13 +57,16 @@
                         <tbody>
                             <c:forEach items="${fileList}" var="file">
                                 <tr>
-                                    <th scope="row">${file.user}</th>
+                                    <th scope="row">${file.name}</th>
                                     <td>${file.permission}</td>
                                     <td>${file.status}</td>
                                     <td>
-                                        <a href="DownloadFile?fileId=${file.id}" class="btn btn-primary" id="btnDownload"
-                                           target="_blank">Download</a>
-                                        <button type="button" class="btn btn-danger" id="btnRemove" data-file-id="${file.id}">Remove</button>
+                                        <form method="POST" action="RemoveFile" id="removeForm" >
+                                            <a href="DownloadFile?fileId=${file.id}" class="btn btn-primary" id="btnDownload"
+                                               target="_blank">Download</a>
+                                            <input type="hidden" name="fileId" value="${file.id}">
+                                            <button type="submit" form="removeForm" value="Submit" class="btn btn-danger" id="btnRemove">Remove</button>
+                                        </form>
                                     </td>
                                 </tr>
                             </c:forEach>   

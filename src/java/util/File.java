@@ -5,6 +5,9 @@
  */
 package util;
 
+import java.nio.file.Path;
+import java.nio.file.Paths;
+
 /**
  *
  * @author canku
@@ -16,6 +19,7 @@ public class File {
     private String status;
     private String uploadedFile;
     private int id;
+    private String name;
 
     public File(int id, String user, String permission, String status, String filePath) {
         this.id = id;
@@ -32,9 +36,19 @@ public class File {
     public int getId() {
         return id;
     }
-    
+
     public void setId(int id) {
         this.id = id;
+    }
+
+    public String getName() {
+        String result = null;
+        if (this.uploadedFile != null) {
+            Path path = Paths.get(this.uploadedFile);
+            Path fileName = path.getFileName();
+            result = fileName.toString();
+        }
+        return result;
     }
 
     public String getUser() {
