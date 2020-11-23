@@ -77,9 +77,7 @@ public class login extends HttpServlet {
                             userName.setMaxAge(30*60);
                             response.addCookie(userName);
                             //response.setHeader("Set-Cookie", "key=value; HttpOnly; SameSite=strict");
-                            response.sendRedirect("userPage.jsp");
-                      
-                        response.sendRedirect("userPage.jsp");
+                            response.sendRedirect("userPage");
                     } else {
                         response.sendRedirect("index.jsp");
                     }

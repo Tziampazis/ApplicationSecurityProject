@@ -103,7 +103,7 @@ public class GoogleAuthServlet extends HttpServlet {
                 javax.servlet.http.Cookie userName = new javax.servlet.http.Cookie("user", name);
                 userName.setMaxAge(30 * 60);
                 response.addCookie(userName);
-                response.sendRedirect("userPage.jsp");
+                response.sendRedirect("userPage");
             }
         } catch (SQLException ex) {
             Logger.getLogger(GoogleAuthServlet.class.getName()).log(Level.SEVERE, null, ex);

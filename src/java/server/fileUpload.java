@@ -27,6 +27,7 @@ import java.util.Base64;
 import javax.crypto.Cipher;
 import javax.crypto.KeyGenerator;
 import javax.crypto.SecretKey;
+import javax.servlet.http.HttpSession;
 import sun.misc.BASE64Encoder;
 
 @WebServlet(name = "fileUpload", urlPatterns = {"/fileUpload"})
@@ -48,28 +49,29 @@ public class fileUpload extends HttpServlet {
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-        SessionTracking sessionTracking = new SessionTracking("");
-
-//      if (SessionTracking.checkTimeValid(request.getSession().getCreationTime(),request.getSession().getLastAccessedTime(),request.getSession().getMaxInactiveInterval())){
-        System.out.println("Session Valid");
-        System.out.println(request.getSession().getId());
-
-        response.setContentType("text/html;charset=UTF-8");
         try (PrintWriter out = response.getWriter()) {
-            PreparedStatement statement;
+            String user = null;
+            HttpSession session = request.getSession();
+            if (session.getAttribute("user") == null) {
+                response.sendRedirect("index.jsp");
+            } else {
+                user = (String) session.getAttribute("user");
+            }
 
             Class.forName("org.apache.derby.jdbc.ClientDriver");
             // create a database connection
             connection = DriverManager.getConnection("jdbc:derby://localhost:1527/security;user=security;password=security");
 
-            String state_of_file = request.getParameter("public_private");
+            String permission = request.getParameter("public_private");
             Part file = request.getPart("file");
             String name = file.getSubmittedFileName();
 
             String filePath = SaveLocation + "\\" + name;
             Encrypt(file, filePath);
-            InsertToDB(state_of_file, filePath);
-            response.sendRedirect("userPage.jsp");
+
+            String status = "active";
+            InsertToDB(user, status, permission, filePath);
+            response.sendRedirect("userPage");
 
         } catch (Exception e) {
             System.err.println(e.getMessage());
@@ -85,15 +87,15 @@ public class fileUpload extends HttpServlet {
         }
     }
 
-    public void InsertToDB(String state_of_file, String filePath)
+    public void InsertToDB(String user, String status, String permission, String filePath)
             throws SQLException {
         String query = "insert into files (uploadedfile, usr, status, permission) values(?, ?, ?, ?)";
         PreparedStatement statement = connection.prepareStatement(query);
         statement = connection.prepareStatement(query);
         statement.setString(1, filePath);
-        statement.setString(2, "aaa");
-        statement.setString(3, "active");
-        statement.setString(4, state_of_file);
+        statement.setString(2, user);
+        statement.setString(3, status);
+        statement.setString(4, permission);
         statement.executeUpdate();
     }
 

@@ -5,8 +5,6 @@
  */
 package util;
 
-import java.sql.Blob;
-
 /**
  *
  * @author canku
@@ -16,13 +14,27 @@ public class File {
     private String user;
     private String permission;
     private String status;
-    private Blob uploadedFile;
+    private String uploadedFile;
+    private int id;
 
-    public File(String user, String permission, String status, Blob fileVal) {
+    public File(int id, String user, String permission, String status, String filePath) {
+        this.id = id;
         this.user = user;
         this.permission = permission;
         this.status = status;
-        this.uploadedFile = fileVal;
+        this.uploadedFile = filePath;
+    }
+
+    public File(String encodedtxt) {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
+
+    public int getId() {
+        return id;
+    }
+    
+    public void setId(int id) {
+        this.id = id;
     }
 
     public String getUser() {
@@ -49,11 +61,11 @@ public class File {
         this.status = status;
     }
 
-    public Blob getUploadedFile() {
+    public String getUploadedFile() {
         return uploadedFile;
     }
 
-    public void setUploadedFile(Blob uploadedFile) {
+    public void setUploadedFile(String uploadedFile) {
         this.uploadedFile = uploadedFile;
     }
 
