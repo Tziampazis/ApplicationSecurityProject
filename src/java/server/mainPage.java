@@ -5,6 +5,7 @@
  */
 package server;
 
+import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.sql.Connection;
@@ -13,6 +14,7 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.Base64;
 import java.util.Date;
 import java.util.List;
 import javax.servlet.RequestDispatcher;
@@ -23,6 +25,7 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
+import sun.misc.BASE64Decoder;
 import util.File;
 
 /**
@@ -71,7 +74,7 @@ public class mainPage extends HttpServlet {
         }
     }
 
-    private List<File> GetFiles(String permission, String status) throws SQLException {
+    private List<File> GetFiles(String permission, String status) throws SQLException, Exception {
         List<File> result = new ArrayList<File>();
         String query = "select id, usr, permission, status, uploadedFile, uploadDate from SECURITY.FILES where permission=? and status=?";
         PreparedStatement statement = connection.prepareStatement(query);
@@ -89,12 +92,25 @@ public class mainPage extends HttpServlet {
             String filePath = rsFile.getString("uploadedFile");
             int id = Integer.parseInt(idStr);
             Date uploadDate = rsFile.getDate("uploadDate");
-            
-            File fileItem = new File(id, userFile, permissionFile, statusFile, filePath, uploadDate);
+
+            byte[] fileContent = Decode(filePath);
+            Base64.Encoder encoder = Base64.getEncoder();
+            String encryptedText = encoder.encodeToString(fileContent);
+
+            File fileItem = new File(id, userFile, permissionFile, statusFile, encryptedText, uploadDate);
             result.add(fileItem);
         }
 
         return result;
+    }
+
+    public byte[] Decode(String filePath)
+            throws Exception {
+        java.io.File file = new java.io.File(filePath);
+        BASE64Decoder decoder = new BASE64Decoder();
+        byte[] fileDecoded = decoder.decodeBuffer(new FileInputStream(file.getAbsolutePath()));
+
+        return fileDecoded;
     }
 
 }

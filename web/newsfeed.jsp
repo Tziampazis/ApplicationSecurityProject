@@ -52,8 +52,8 @@
                     <div class="col-3"> 
                         <a href="DownloadFile?fileId=${file.id}" class="btn btn-primary" id="btnDownload"
                            target="_blank">Download</a>
-                        <a href="DownloadFile?fileId=${file.id}" class="btn btn-success" id="btnDownload"
-                           target="_blank">Display</a>
+                        <a href="#" class="btn btn-success" id="btnDisplay" data-image="${file.uploadedFile}" >Display</a>
+
                     </div>
                 </div>
                 <br>
@@ -63,7 +63,7 @@
         <div class="modal fade" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
             <div class="modal-dialog" role="document">
                 <div class="modal-content">
-                    <img src="..." class="img-fluid" alt="Responsive image">
+                    <img src="" class="img-fluid" id="imageFrame" alt="Responsive image">
                 </div>
             </div>
         </div>
@@ -73,6 +73,14 @@
                     console.log("SIGN OUT");
                 });
             }
+            $("#btnDisplay").click(function () {
+                let atributeVal = $("#btnDisplay").attr("data-image");
+                atributeVal = "data:image/png;base64, " + atributeVal;
+                console.log(atributeVal);
+                $("#imageFrame").attr("src", atributeVal);
+                $('#exampleModal').modal()
+            });
+
         </script>
     </body>
 </html>
