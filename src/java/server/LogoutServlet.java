@@ -23,7 +23,7 @@ import javax.servlet.http.HttpSession;
 public class LogoutServlet extends HttpServlet {
 	private static final long serialVersionUID = 1L;
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-    	System.out.println("ASDfsad");
+    	System.out.println("LogOut");
        Cookie[] cookies = request.getCookies();
     	if(cookies != null){
     	for(Cookie cookie : cookies){
@@ -38,7 +38,6 @@ public class LogoutServlet extends HttpServlet {
     	if(session != null){
                 System.out.println("User=" + session.getAttribute("user"));
     		session.invalidate();
-                
     	}
     	response.sendRedirect("index.jsp");
     }

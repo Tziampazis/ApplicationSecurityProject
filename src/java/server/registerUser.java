@@ -7,11 +7,13 @@ package server;
 
 import java.io.IOException;
 import java.io.PrintWriter;
+import java.net.URLEncoder;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import javax.servlet.RequestDispatcher;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
@@ -54,11 +56,10 @@ public class registerUser extends HttpServlet {
             System.out.println(password);
 
             query = "select username from userDB where username = ?";
-
             statement = connection.prepareStatement(query);
             statement.setString(1, username);
             ResultSet rs = statement.executeQuery();
-            System.out.println(rs.next());
+            System.out.println("is null " +rs.next());
 
             boolean exist = false;
             String result = "";
@@ -73,22 +74,39 @@ public class registerUser extends HttpServlet {
             System.out.println("Username exist : " + exist);
 
             if (!exist) {
+                //System.out.println("works");
+
                 if (username != null && !username.isEmpty() && password != null && !password.isEmpty()) {
+
                     String hashpass = hashpassword.hashString(password);
-                    query = "insert into userDB values(?, ?, ?)";
-                    statement = connection.prepareStatement(query);
-                    statement.setString(1, username);
-                    statement.setString(2, hashpass);
-                    statement.setString(3, "normal");
-                    statement.executeUpdate();
+                    PreparedStatement statement1;
+                    query = "insert into userDB values(?, ?, ?, ?, ?)";
+                    //System.out.println("before0");
+
+                    statement1 = connection.prepareStatement(query);
+                    //System.out.println("before1");
+
+                    statement1.setString(1, username);
+                    statement1.setString(2, hashpass);
+                    statement1.setString(3, "normal");
+                    statement1.setString(4, null);
+                    statement1.setString(5, null);
+                    //System.out.println("before2");
+
+                    statement1.executeUpdate();
+                    //System.out.println("after");
+
                     response.sendRedirect("index.jsp");
                 }
             } else {
-                response.sendRedirect("failure.html");
+                request.setAttribute("msg", "User exist");
+                RequestDispatcher rd = request.getRequestDispatcher("registration.jsp");
+                rd.forward(request, response);
+                //response.sendRedirect("registration.jsp");
             }
 
         } catch (Exception e) {
-            System.err.println(e.getMessage());
+            System.err.println("the Problem 1 "+e.getMessage());
         } finally {
             try {
                 if (connection != null) {
@@ -96,7 +114,7 @@ public class registerUser extends HttpServlet {
                 }
             } catch (SQLException e) {
                 // connection close failed.
-                System.err.println(e.getMessage());
+                System.err.println("the Problem " +e.getMessage());
             }
         }
     }

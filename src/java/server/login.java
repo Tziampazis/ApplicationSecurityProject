@@ -81,13 +81,15 @@ public class login extends HttpServlet {
                     } else {
                         response.sendRedirect("index.jsp");
                     }
+                }else{
+                    response.sendRedirect("index.jsp");
                 }
             } else {
-                response.sendRedirect("failure.html");
+                response.sendRedirect("index.jsp");
             }
             
         } catch (Exception e) {
-            System.err.println(e.getMessage());
+            System.err.println("Problem!");
         } finally {
             try {
                 if (connection != null) {

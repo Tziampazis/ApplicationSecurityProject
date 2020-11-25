@@ -12,10 +12,18 @@
         <title>Registration</title>
     </head>
     <body>
+        <h1>Register</h1>
         <form method="POST" action="registerUser" >
             <input type="text" name="username"/>
             <input type="password" name="password"/>
             <input type="submit" value="Send"/>            
         </form>  
+        <%String msg = (String)request.getAttribute("msg");%>
+        <%if (msg == null){%>
+         <p></p>
+        <%}else{%>
+         <p><%=msg%></p>
+        <%}%>
+       
     </body>
 </html>

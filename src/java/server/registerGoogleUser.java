@@ -1,4 +1,4 @@
-/*
+    /*
  * To change this license header, choose License Headers in Project Properties.
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
@@ -45,7 +45,9 @@ public class registerGoogleUser extends HttpServlet {
 
             // create a database connection
             connection = DriverManager.getConnection("jdbc:derby://localhost:1527/security;user=security;password=security");          
-
+           
+            
+            
             String name = request.getParameter("name");
             String surname = request.getParameter("surname");
             String email = request.getParameter("email");

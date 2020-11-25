@@ -12,6 +12,9 @@
     <head>
         <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
         <title>Registration with Google Account</title>
+        <script src="https://apis.google.com/js/platform.js" async defer></script>
+        <meta name="google-signin-client_id" content="673492077692-d0it5938e4bm0j2paccl2qekqq21bdbu.apps.googleusercontent.com">
+    
     </head>
     <body>
         <form method="POST" action="registerGoogleUser" >
@@ -28,7 +31,19 @@
                 <td>Name <%=cust.getName()%></td> 
                 <td><%=cust.getSurname()%></td> <br>
             </tr> 
-            <input type="submit" value="Send"/>            
-        </form>  
+            <input type="submit" value="Accept"/>
+                     
+            </form>  
+            <form method="post" action="rejectedRegistration">
+                <input type="submit" onclick="signOut()" value="Reject"/> 
+                <input class="g-signin2" type="hidden" >
+            </form>
+            <script>
+                function signOut(){
+                    gapi.auth2.getAuthInstance().signOut().then(function () {
+                        console.log("SIGN OUT");
+                    });
+                }
+            </script>
     </body>
 </html>
