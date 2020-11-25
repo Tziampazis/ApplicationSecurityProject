@@ -23,6 +23,7 @@ import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.Part;
 
 import java.util.Base64;
+import java.util.Date;
 
 import javax.crypto.Cipher;
 import javax.crypto.KeyGenerator;
@@ -34,7 +35,7 @@ import sun.misc.BASE64Encoder;
 @MultipartConfig
 public class fileUpload extends HttpServlet {
 
-    final String SaveLocation = "C:\\temp";
+    final String SaveLocation = "C:\\temp\\UploadedFiles";
     static Cipher cipher;
     Connection connection = null;
 
@@ -64,9 +65,12 @@ public class fileUpload extends HttpServlet {
 
             String permission = request.getParameter("public_private");
             Part file = request.getPart("file");
+            if (file.getSize() <= 0) {
+                response.sendRedirect("userPage");
+            }
             String name = file.getSubmittedFileName();
 
-            String filePath = SaveLocation + "\\" + name;
+            String filePath =  SaveLocation + "\\" + name;
             Encrypt(file, filePath);
 
             String status = "active";
@@ -89,13 +93,17 @@ public class fileUpload extends HttpServlet {
 
     public void InsertToDB(String user, String status, String permission, String filePath)
             throws SQLException {
-        String query = "insert into files (uploadedfile, usr, status, permission) values(?, ?, ?, ?)";
+        String query = "insert into files (uploadedfile, usr, status, permission, uploaddate) values(?, ?, ?, ?, ?)";
         PreparedStatement statement = connection.prepareStatement(query);
+        Date dateNow = new Date();
+        java.sql.Date uploadDate = new java.sql.Date(dateNow.getTime());
         statement = connection.prepareStatement(query);
         statement.setString(1, filePath);
         statement.setString(2, user);
         statement.setString(3, status);
         statement.setString(4, permission);
+        statement.setDate(5, uploadDate);
+
         statement.executeUpdate();
     }
 
@@ -109,24 +117,6 @@ public class fileUpload extends HttpServlet {
         encoder.encode(inputStream, fos);
     }
 
-//    private void SaveFile(String filePath, InputStream inputStream) {
-//        try {
-//            OutputStream os = new FileOutputStream(filePath);
-//
-//            byte[] buffer = new byte[1024];
-//            int bytesRead;
-//            //read from is to buffer
-//            while ((bytesRead = inputStream.read(buffer)) != -1) {
-//                os.write(buffer, 0, bytesRead);
-//            }
-//            inputStream.close();
-//            //flush OutputStream to write any buffered data to file
-//            os.flush();
-//            os.close();
-//        } catch (IOException e) {
-//            e.printStackTrace();
-//        }
-//    }
     /**
      * Returns a short description of the servlet.
      *

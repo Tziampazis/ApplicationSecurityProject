@@ -13,6 +13,7 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 import javax.servlet.RequestDispatcher;
 import javax.servlet.ServletException;
@@ -89,7 +90,7 @@ public class userServlet extends HttpServlet {
 
     private List<File> GetFiles(String username, String status) throws SQLException {
         List<File> result = new ArrayList<File>();
-        String query = "select id, usr, permission, status, uploadedFile from SECURITY.FILES where usr=? and status=?";
+        String query = "select id, usr, permission, status, uploadedFile, uploaddate from SECURITY.FILES where usr=? and status=?";
         PreparedStatement statement = connection.prepareStatement(query);
 
         statement.setString(1, username);
@@ -102,10 +103,12 @@ public class userServlet extends HttpServlet {
             String permissionFile = rsFile.getString("permission");
             String statusFile = rsFile.getString("status");
             String idStr = rsFile.getString("id");
-            String filePath= rsFile.getString("uploadedFile");
+            String filePath = rsFile.getString("uploadedFile");
+            Date uploadDate = rsFile.getDate("uploadDate");
+
             int id = Integer.parseInt(idStr);
 
-            File fileItem = new File(id, userFile, permissionFile, statusFile, filePath);
+            File fileItem = new File(id, userFile, permissionFile, statusFile, filePath, uploadDate);
             result.add(fileItem);
         }
 

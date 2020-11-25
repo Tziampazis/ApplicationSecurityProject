@@ -14,6 +14,7 @@ import java.sql.DriverManager;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.Date;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.Cookie;
@@ -37,7 +38,7 @@ public class RemoveFile extends HttpServlet {
             throws ServletException, IOException {
         response.setContentType("text/html;charset=UTF-8");
         try (PrintWriter out = response.getWriter()) {
-            String user = null;
+                String user = null;
             HttpSession session = request.getSession();
             if (session.getAttribute("user") == null) {
                 response.sendRedirect("index.jsp");
@@ -84,7 +85,7 @@ public class RemoveFile extends HttpServlet {
     }
 
     private util.File GetFile(int id) throws SQLException {
-        String query = "select id, usr, permission, status, uploadedFile from SECURITY.FILES where id=?";
+        String query = "select id, usr, permission, status, uploadedFile, uploadDate from SECURITY.FILES where id=?";
         PreparedStatement statement = connection.prepareStatement(query);
 
         String idStr = String.valueOf(id);
@@ -97,11 +98,12 @@ public class RemoveFile extends HttpServlet {
             String permissionFile = rsFile.getString("permission");
             String statusFile = rsFile.getString("status");
             String uploadedFile = rsFile.getString("uploadedFile");
+            Date uploadDate = rsFile.getDate("uploadDate");
 
             String idStrRes = rsFile.getString("id");
             int idRes = Integer.parseInt(idStrRes);
 
-            result = new util.File(idRes, userFile, permissionFile, statusFile, uploadedFile);
+            result = new util.File(idRes, userFile, permissionFile, statusFile, uploadedFile, uploadDate);
             break;
         }
 
