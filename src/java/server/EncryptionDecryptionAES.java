@@ -16,11 +16,10 @@ public class EncryptionDecryptionAES {
 static Cipher cipher;
 
 public static void main(String[] args) throws Exception {
- //KeyGenerator keyGenerator = KeyGenerator.getInstance("AES");
- //keyGenerator.init(128);
- //SecretKey secretKey = keyGenerator.generateKey();
+ KeyGenerator keyGenerator = KeyGenerator.getInstance("AES");
+ keyGenerator.init(128);
+ SecretKey secretKey = keyGenerator.generateKey();
  cipher = Cipher.getInstance("AES"); 
- SecretKey secretKey = 12345ABCDE;
 
  String plainText = "AES Symmetric Encryption Decryption";
  System.out.println("Plain Text Before Encryption: " + plainText);
