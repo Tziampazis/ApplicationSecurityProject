@@ -7,6 +7,7 @@ package util;
 
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.Date;
 
 /**
  *
@@ -20,13 +21,15 @@ public class File {
     private String uploadedFile;
     private int id;
     private String name;
+    private Date uploadDate;
 
-    public File(int id, String user, String permission, String status, String filePath) {
+    public File(int id, String user, String permission, String status, String filePath, Date uploadDate) {
         this.id = id;
         this.user = user;
         this.permission = permission;
         this.status = status;
         this.uploadedFile = filePath;
+        this.uploadDate = uploadDate;
     }
 
     public File(String encodedtxt) {
@@ -83,4 +86,11 @@ public class File {
         this.uploadedFile = uploadedFile;
     }
 
+    public Date getUploadDate() {
+        return uploadDate;
+    }
+
+    public void setUploadDate(Date uploadDate) {
+        this.uploadDate = uploadDate;
+    } 
 }

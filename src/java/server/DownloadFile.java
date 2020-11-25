@@ -15,6 +15,7 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 import javax.servlet.RequestDispatcher;
 import javax.servlet.ServletContext;
@@ -123,7 +124,7 @@ public class DownloadFile extends HttpServlet {
     }
 
     private util.File GetFile(int id) throws SQLException {
-        String query = "select id, usr, permission, status, uploadedFile from SECURITY.FILES where id=?";
+        String query = "select id, usr, permission, status, uploadedFile, uploadDate from SECURITY.FILES where id=?";
         PreparedStatement statement = connection.prepareStatement(query);
 
         String idStr = String.valueOf(id);
@@ -136,11 +137,12 @@ public class DownloadFile extends HttpServlet {
             String permissionFile = rsFile.getString("permission");
             String statusFile = rsFile.getString("status");
             String uploadedFile = rsFile.getString("uploadedFile");
+            Date uploadDate = rsFile.getDate("uploadDate");
 
             String idStrRes = rsFile.getString("id");
             int idRes = Integer.parseInt(idStrRes);
 
-            result = new util.File(idRes, userFile, permissionFile, statusFile, uploadedFile);
+            result = new util.File(idRes, userFile, permissionFile, statusFile, uploadedFile, uploadDate);
             break;
         }
 

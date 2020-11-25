@@ -44,14 +44,14 @@
             </div>
             <br>
             <div class="row">
-                <div class="col-6">
+                <div class="col-8">
                     <table class="table">
                         <thead>
                             <tr>
                                 <th scope="col">Name</th>
                                 <th scope="col">Permission</th>
                                 <th scope="col">Status</th>
-                                <th scope="col">Operation</th>
+                                <th scope="col" class="text-center">Operation</th>
                             </tr>
                         </thead>
                         <tbody>
@@ -60,12 +60,14 @@
                                     <th scope="row">${file.name}</th>
                                     <td>${file.permission}</td>
                                     <td>${file.status}</td>
-                                    <td>
+                                    <td class="text-center">
                                         <form method="POST" action="RemoveFile" id="removeForm" >
-                                            <a href="DownloadFile?fileId=${file.id}" class="btn btn-primary" id="btnDownload"
-                                               target="_blank">Download</a>
-                                            <input type="hidden" name="fileId" value="${file.id}">
-                                            <button type="submit" form="removeForm" value="Submit" class="btn btn-danger" id="btnRemove">Remove</button>
+                                            <div class="col-12">
+                                                <a href="DownloadFile?fileId=${file.id}" class="btn btn-primary btn-sm" id="btnDownload"
+                                                   target="_blank">Download</a>
+                                                <button type="submit" form="removeForm" value="Submit" class="btn btn-danger btn-sm" id="btnRemove">Remove</button>
+                                                <input type="hidden" name="fileId" value="${file.id}">
+                                            </div>
                                         </form>
                                     </td>
                                 </tr>
@@ -74,11 +76,8 @@
                         </tbody>
                     </table>
                     <br>
-                    <form method="GET" action="DownloadFile" enctype="multipart/form-data" >
-                        <button class="btn btn-outline-success my-2 my-sm-0" type="submit">Download Files</button>
-                    </form>
                 </div>
-                <div class="col-4 offset-1">
+                <div class="col-3 offset-1">
                     <form method="POST" action="fileUpload" enctype="multipart/form-data" >
                         File:
                         <br>
