@@ -69,12 +69,15 @@ public class fileUpload extends HttpServlet {
                 response.sendRedirect("userPage");
             }
             String name = file.getSubmittedFileName();
-
-            String filePath =  SaveLocation + "\\" + name;
+            Date dateNow = new Date();
+            long millis = dateNow.getTime();
+            String millisStr = Long.toString(millis);
+            name = millisStr + name;
+            String filePath = SaveLocation + "\\" + name;
             Encrypt(file, filePath);
 
             String status = "active";
-            InsertToDB(user, status, permission, filePath);
+            InsertToDB(user, status, permission, filePath, dateNow);
             response.sendRedirect("userPage");
 
         } catch (Exception e) {
@@ -91,12 +94,12 @@ public class fileUpload extends HttpServlet {
         }
     }
 
-    public void InsertToDB(String user, String status, String permission, String filePath)
+    public void InsertToDB(String user, String status, String permission, String filePath, Date currentDate)
             throws SQLException {
         String query = "insert into files (uploadedfile, usr, status, permission, uploaddate) values(?, ?, ?, ?, ?)";
         PreparedStatement statement = connection.prepareStatement(query);
-        Date dateNow = new Date();
-        java.sql.Date uploadDate = new java.sql.Date(dateNow.getTime());
+
+        java.sql.Date uploadDate = new java.sql.Date(currentDate.getTime());
         statement = connection.prepareStatement(query);
         statement.setString(1, filePath);
         statement.setString(2, user);

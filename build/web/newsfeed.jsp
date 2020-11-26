@@ -74,7 +74,7 @@
                     <div class="col-3"> 
                         <a href="DownloadFile?fileId=${file.id}" class="btn btn-primary" id="btnDownload"
                            target="_blank">Download</a>
-                        <a href="#" class="btn btn-success" id="btnDisplay" data-image="${file.uploadedFile}" >Display</a>
+                        <a href="#" class="btn btn-success" id="btnDisplay" data-image="${file.base64File}" >Display</a>
 
                     </div>
                 </div>

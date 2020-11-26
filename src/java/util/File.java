@@ -22,6 +22,17 @@ public class File {
     private int id;
     private String name;
     private Date uploadDate;
+    private String base64File;
+
+    public File(int id, String user, String permission, String status, String filePath, Date uploadDate, String base64File) {
+        this.id = id;
+        this.user = user;
+        this.permission = permission;
+        this.status = status;
+        this.uploadedFile = filePath;
+        this.uploadDate = uploadDate;
+        this.base64File = base64File;
+    }
 
     public File(int id, String user, String permission, String status, String filePath, Date uploadDate) {
         this.id = id;
@@ -92,5 +103,13 @@ public class File {
 
     public void setUploadDate(Date uploadDate) {
         this.uploadDate = uploadDate;
-    } 
+    }
+
+    public String getBase64File() {
+        return base64File;
+    }
+
+    public void setBase64File(String base64File) {
+        this.base64File = base64File;
+    }
 }

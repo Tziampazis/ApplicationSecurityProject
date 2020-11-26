@@ -97,7 +97,7 @@ public class mainPage extends HttpServlet {
             Base64.Encoder encoder = Base64.getEncoder();
             String encryptedText = encoder.encodeToString(fileContent);
 
-            File fileItem = new File(id, userFile, permissionFile, statusFile, encryptedText, uploadDate);
+            File fileItem = new File(id, userFile, permissionFile, statusFile, filePath, uploadDate, encryptedText);
             result.add(fileItem);
         }
 
