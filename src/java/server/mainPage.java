@@ -40,14 +40,6 @@ public class mainPage extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         try (PrintWriter out = response.getWriter()) {
-            String user = null;
-            HttpSession session = request.getSession();
-            if (session.getAttribute("user") == null) {
-                response.sendRedirect("index.jsp");
-            } else {
-                user = (String) session.getAttribute("user");
-            }
-
             Class.forName("org.apache.derby.jdbc.ClientDriver");
             // create a database connection
             connection = DriverManager.getConnection("jdbc:derby://localhost:1527/security;user=security;password=security");

@@ -74,8 +74,7 @@
                     <div class="col-3"> 
                         <a href="DownloadFile?fileId=${file.id}" class="btn btn-primary" id="btnDownload"
                            target="_blank">Download</a>
-                        <a href="#" class="btn btn-success" id="btnDisplay" data-image="${file.base64File}" >Display</a>
-
+                        <button class="btn btn-success btndisplay" data-image="${file.base64File}" >Display</button>
                     </div>
                 </div>
                 <br>
@@ -95,11 +94,10 @@
                     console.log("SIGN OUT");
                 });
             }
-            $("#btnDisplay").click(function () {
-                let atributeVal = $(this).attr("data-image");
-                atributeVal = "data:image/png;base64, " + atributeVal;
-                console.log(atributeVal);
-                $("#imageFrame").attr("src", atributeVal);
+            $(".btndisplay").click(function () {
+                let base64Value = this.dataset.image;
+                base64Value = "data:image/png;base64, " + base64Value;
+                $("#imageFrame").attr("src", base64Value);
                 $('#exampleModal').modal()
             });
 
