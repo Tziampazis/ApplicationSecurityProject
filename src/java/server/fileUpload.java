@@ -67,6 +67,7 @@ public class fileUpload extends HttpServlet {
             Part file = request.getPart("file");
             if (file.getSize() <= 0) {
                 response.sendRedirect("userPage");
+                return;
             }
             String name = file.getSubmittedFileName();
             Date dateNow = new Date();
@@ -118,6 +119,9 @@ public class fileUpload extends HttpServlet {
         FileOutputStream fos = new FileOutputStream(encryptedFile.getAbsoluteFile());
         InputStream inputStream = file.getInputStream();
         encoder.encode(inputStream, fos);
+        
+        inputStream.close();
+        fos.close();
     }
 
     /**

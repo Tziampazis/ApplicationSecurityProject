@@ -72,7 +72,7 @@ public class registerGoogleUser extends HttpServlet {
             javax.servlet.http.Cookie userName = new javax.servlet.http.Cookie("user", name);
             userName.setMaxAge(30 * 60);
             response.addCookie(userName);
-            response.setHeader("Set-Cookie", "key=value; HttpOnly; SameSite=strict");
+//            response.setHeader("Set-Cookie", "key=value; HttpOnly; SameSite=strict");
             response.sendRedirect("userPage.jsp");
 
         } catch (Exception e) {

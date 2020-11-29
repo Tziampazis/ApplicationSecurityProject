@@ -96,7 +96,7 @@
                 });
             }
             $("#btnDisplay").click(function () {
-                let atributeVal = $("#btnDisplay").attr("data-image");
+                let atributeVal = $(this).attr("data-image");
                 atributeVal = "data:image/png;base64, " + atributeVal;
                 console.log(atributeVal);
                 $("#imageFrame").attr("src", atributeVal);
