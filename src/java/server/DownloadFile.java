@@ -67,7 +67,19 @@ public class DownloadFile extends HttpServlet {
             } else {
                 user = (String) session.getAttribute("user");
             }
-
+            String userName = null;
+            String sessionID = null;
+            Cookie[] cookies = request.getCookies();
+            if (cookies != null) {
+                for (Cookie cookie : cookies) {
+                    if (cookie.getName().equals("user")) {
+                        userName = cookie.getValue();
+                    }
+                    if (cookie.getName().equals("JSESSIONID")) {
+                        sessionID = cookie.getValue();
+                    }
+                }
+            }
             Class.forName("org.apache.derby.jdbc.ClientDriver");
 
             // create a database connection
@@ -76,6 +88,13 @@ public class DownloadFile extends HttpServlet {
             String fileIdStr = request.getParameter("fileId");
             int fileId = Integer.parseInt(fileIdStr);
             util.File dbFile = GetFile(fileId);
+
+            String fileUsername = dbFile.getUser();
+            String filePermission = dbFile.getPermission();
+
+            if (!fileUsername.equals(userName) && !filePermission.equals("public")) {
+                response.sendRedirect("userPage");
+            }
             byte[] decodedFile = Decode(dbFile.getUploadedFile());
             ByteArrayInputStream bis = new ByteArrayInputStream(decodedFile);
             int fileLength = bis.available();
@@ -153,8 +172,9 @@ public class DownloadFile extends HttpServlet {
             throws Exception {
         File file = new File(filePath);
         BASE64Decoder decoder = new BASE64Decoder();
-        byte[] fileDecoded = decoder.decodeBuffer(new FileInputStream(file.getAbsolutePath()));
-
+        InputStream inputStream = new FileInputStream(file.getAbsolutePath());
+        byte[] fileDecoded = decoder.decodeBuffer(inputStream);
+        inputStream.close();
         return fileDecoded;
     }
 

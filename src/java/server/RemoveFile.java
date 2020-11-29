@@ -38,7 +38,7 @@ public class RemoveFile extends HttpServlet {
             throws ServletException, IOException {
         response.setContentType("text/html;charset=UTF-8");
         try (PrintWriter out = response.getWriter()) {
-                String user = null;
+                    String user = null;
             HttpSession session = request.getSession();
             if (session.getAttribute("user") == null) {
                 response.sendRedirect("index.jsp");

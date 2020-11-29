@@ -7,6 +7,7 @@ package server;
 
 import java.io.FileInputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.PrintWriter;
 import java.sql.Connection;
 import java.sql.DriverManager;
@@ -100,7 +101,9 @@ public class mainPage extends HttpServlet {
             throws Exception {
         java.io.File file = new java.io.File(filePath);
         BASE64Decoder decoder = new BASE64Decoder();
-        byte[] fileDecoded = decoder.decodeBuffer(new FileInputStream(file.getAbsolutePath()));
+        InputStream inputStream = new FileInputStream(file.getAbsolutePath());
+        byte[] fileDecoded = decoder.decodeBuffer(inputStream);
+        inputStream.close();
 
         return fileDecoded;
     }

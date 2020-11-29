@@ -20,8 +20,8 @@
         <br>
 
         <form method="POST" action="login" >
-            <input type="text" name="username" value="chris"/>
-            <input type="password" name="password" value="1234"/>
+            <input type="text" name="username"/>
+            <input type="password" name="password"/>
             <input type="submit" value="Send"/>            
         </form>        
                 <br>

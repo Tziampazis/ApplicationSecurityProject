@@ -31,9 +31,9 @@
                     <div class="card-body">
                       <h5 class="card-title ">Login</h5>
                       <form method="POST" action="login" >
-                      <input type="text" class="form-control" name="username" placeholder="Username" aria-label="Username"value="chris" >
+                      <input type="text" class="form-control" name="username" placeholder="Username" aria-label="Username" >
                       <br>
-                      <input type="password" class="form-control" name="password" placeholder="Username" aria-label="Username" value="1234">                
+                      <input type="password" class="form-control" name="password" placeholder="Password" aria-label="Username">                
                       <br>
                         <button type="submit" class="btn btn-primary btn-lg btn-block">Login</button>
                       </form>
