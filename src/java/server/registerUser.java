@@ -24,6 +24,8 @@ import util.hashpassword;
 @WebServlet(name = "registerUser", urlPatterns = {"/registerUser"})
 public class registerUser extends HttpServlet {
 
+    util.EncryptionDecryptionAES encdyc = new util.EncryptionDecryptionAES();
+
     /**
      * Handles the HTTP <code>POST</code> method.
      *
@@ -57,9 +59,9 @@ public class registerUser extends HttpServlet {
 
             query = "select username from userDB where username = ?";
             statement = connection.prepareStatement(query);
-            statement.setString(1, username);
+            statement.setString(1, encdyc.encrypt(username));
             ResultSet rs = statement.executeQuery();
-            System.out.println("is null " +rs.next());
+            System.out.println("is null " + rs.next());
 
             boolean exist = false;
             String result = "";
@@ -86,9 +88,9 @@ public class registerUser extends HttpServlet {
                     statement1 = connection.prepareStatement(query);
                     //System.out.println("before1");
 
-                    statement1.setString(1, username);
+                    statement1.setString(1, encdyc.encrypt(username));
                     statement1.setString(2, hashpass);
-                    statement1.setString(3, "normal");
+                    statement1.setString(3, encdyc.encrypt("normal"));
                     statement1.setString(4, null);
                     statement1.setString(5, null);
                     //System.out.println("before2");
@@ -106,7 +108,7 @@ public class registerUser extends HttpServlet {
             }
 
         } catch (Exception e) {
-            System.err.println("the Problem 1 "+e.getMessage());
+            System.err.println("the Problem 1 " + e.getMessage());
         } finally {
             try {
                 if (connection != null) {
@@ -114,7 +116,7 @@ public class registerUser extends HttpServlet {
                 }
             } catch (SQLException e) {
                 // connection close failed.
-                System.err.println("the Problem " +e.getMessage());
+                System.err.println("the Problem " + e.getMessage());
             }
         }
     }

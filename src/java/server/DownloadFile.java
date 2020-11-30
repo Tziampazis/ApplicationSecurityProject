@@ -43,6 +43,7 @@ import sun.misc.BASE64Encoder;
  */
 @WebServlet(name = "DownloadFile", urlPatterns = {"/DownloadFile"})
 public class DownloadFile extends HttpServlet {
+    util.EncryptionDecryptionAES encdyc = new util.EncryptionDecryptionAES();
 
     private static final int BUFFER_SIZE = 4096;
     Connection connection = null;
@@ -142,7 +143,7 @@ public class DownloadFile extends HttpServlet {
         }
     }
 
-    private util.File GetFile(int id) throws SQLException {
+    private util.File GetFile(int id) throws SQLException, Exception {
         String query = "select id, usr, permission, status, uploadedFile, uploadDate from SECURITY.FILES where id=?";
         PreparedStatement statement = connection.prepareStatement(query);
 
@@ -161,6 +162,10 @@ public class DownloadFile extends HttpServlet {
             String idStrRes = rsFile.getString("id");
             int idRes = Integer.parseInt(idStrRes);
 
+            userFile = encdyc.decrypt(userFile);
+            permissionFile =encdyc.decrypt(permissionFile);
+            statusFile = encdyc.decrypt(statusFile);
+            uploadedFile = encdyc.decrypt(uploadedFile);
             result = new util.File(idRes, userFile, permissionFile, statusFile, uploadedFile, uploadDate);
             break;
         }

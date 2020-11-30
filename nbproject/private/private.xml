@@ -3,15 +3,10 @@
     <editor-bookmarks xmlns="http://www.netbeans.org/ns/editor-bookmarks/2" lastBookmarkId="0"/>
     <open-files xmlns="http://www.netbeans.org/ns/projectui-open-files/2">
         <group>
-            <file>file:/C:/Users/canku/source/repos/ApplicationSecurityProject/src/java/util/File.java</file>
-            <file>file:/C:/Users/canku/source/repos/ApplicationSecurityProject/web/loginAd.jsp</file>
-            <file>file:/C:/Users/canku/source/repos/ApplicationSecurityProject/web/newsfeed.jsp</file>
+            <file>file:/C:/Users/canku/source/repos/ApplicationSecurityProject/src/java/server/registerUser.java</file>
             <file>file:/C:/Users/canku/source/repos/ApplicationSecurityProject/src/java/server/GoogleAuthServlet.java</file>
-            <file>file:/C:/Users/canku/source/repos/ApplicationSecurityProject/src/java/server/DownloadFile.java</file>
-            <file>file:/C:/Users/canku/source/repos/ApplicationSecurityProject/web/userPage.jsp</file>
-            <file>file:/C:/Users/canku/source/repos/ApplicationSecurityProject/src/java/server/myservlet.java</file>
-            <file>file:/C:/Users/canku/source/repos/ApplicationSecurityProject/src/java/server/mainPage.java</file>
-            <file>file:/C:/Users/canku/source/repos/ApplicationSecurityProject/web/index.jsp</file>
+            <file>file:/C:/Users/canku/source/repos/ApplicationSecurityProject/src/java/server/login.java</file>
+            <file>file:/C:/Users/canku/source/repos/ApplicationSecurityProject/src/java/server/registerGoogleUser.java</file>
         </group>
     </open-files>
 </project-private>

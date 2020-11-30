@@ -36,6 +36,8 @@ import util.File;
 @WebServlet(name = "newsfeed", urlPatterns = {"/newsfeed"})
 public class mainPage extends HttpServlet {
 
+    util.EncryptionDecryptionAES encdyc = new util.EncryptionDecryptionAES();
+
     Connection connection = null;
 
     @Override
@@ -72,6 +74,9 @@ public class mainPage extends HttpServlet {
         String query = "select id, usr, permission, status, uploadedFile, uploadDate from SECURITY.FILES where permission=? and status=?";
         PreparedStatement statement = connection.prepareStatement(query);
 
+        permission = encdyc.encrypt(permission);
+        status = encdyc.encrypt(status);
+
         statement.setString(1, permission);
         statement.setString(2, status);
 
@@ -85,6 +90,11 @@ public class mainPage extends HttpServlet {
             String filePath = rsFile.getString("uploadedFile");
             int id = Integer.parseInt(idStr);
             Date uploadDate = rsFile.getDate("uploadDate");
+
+            userFile = encdyc.decrypt(userFile);
+            permissionFile = encdyc.decrypt(permissionFile);
+            statusFile = encdyc.decrypt(statusFile);
+            filePath = encdyc.decrypt(filePath);
 
             byte[] fileContent = Decode(filePath);
             Base64.Encoder encoder = Base64.getEncoder();

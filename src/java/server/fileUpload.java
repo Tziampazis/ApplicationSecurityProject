@@ -34,6 +34,7 @@ import sun.misc.BASE64Encoder;
 @WebServlet(name = "fileUpload", urlPatterns = {"/fileUpload"})
 @MultipartConfig
 public class fileUpload extends HttpServlet {
+    util.EncryptionDecryptionAES encdyc = new util.EncryptionDecryptionAES();
 
     final String SaveLocation = "C:\\temp\\UploadedFiles";
     static Cipher cipher;
@@ -96,16 +97,16 @@ public class fileUpload extends HttpServlet {
     }
 
     public void InsertToDB(String user, String status, String permission, String filePath, Date currentDate)
-            throws SQLException {
+            throws SQLException, Exception {
         String query = "insert into files (uploadedfile, usr, status, permission, uploaddate) values(?, ?, ?, ?, ?)";
         PreparedStatement statement = connection.prepareStatement(query);
 
         java.sql.Date uploadDate = new java.sql.Date(currentDate.getTime());
         statement = connection.prepareStatement(query);
-        statement.setString(1, filePath);
-        statement.setString(2, user);
-        statement.setString(3, status);
-        statement.setString(4, permission);
+        statement.setString(1, encdyc.encrypt(filePath));
+        statement.setString(2, encdyc.encrypt(user));
+        statement.setString(3, encdyc.encrypt(status));
+        statement.setString(4, encdyc.encrypt(permission));
         statement.setDate(5, uploadDate);
 
         statement.executeUpdate();

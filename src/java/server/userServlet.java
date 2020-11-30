@@ -33,6 +33,8 @@ import util.File;
 @WebServlet(name = "userPage", urlPatterns = {"/userPage"})
 public class userServlet extends HttpServlet {
 
+    util.EncryptionDecryptionAES encdyc = new util.EncryptionDecryptionAES();
+
     Connection connection = null;
 
     @Override
@@ -88,10 +90,13 @@ public class userServlet extends HttpServlet {
         }
     }
 
-    private List<File> GetFiles(String username, String status) throws SQLException {
+    private List<File> GetFiles(String username, String status) throws SQLException, Exception {
         List<File> result = new ArrayList<File>();
         String query = "select id, usr, permission, status, uploadedFile, uploaddate from SECURITY.FILES where usr=? and status=?";
         PreparedStatement statement = connection.prepareStatement(query);
+
+        username = encdyc.encrypt(username);
+        status = encdyc.encrypt(status);
 
         statement.setString(1, username);
         statement.setString(2, status);
@@ -105,6 +110,11 @@ public class userServlet extends HttpServlet {
             String idStr = rsFile.getString("id");
             String filePath = rsFile.getString("uploadedFile");
             Date uploadDate = rsFile.getDate("uploadDate");
+
+            userFile = encdyc.decrypt(userFile);
+            permissionFile = encdyc.decrypt(permissionFile);
+            statusFile = encdyc.decrypt(statusFile);
+            filePath = encdyc.decrypt(filePath);
 
             int id = Integer.parseInt(idStr);
 

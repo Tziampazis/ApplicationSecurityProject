@@ -1,4 +1,4 @@
-    /*
+/*
  * To change this license header, choose License Headers in Project Properties.
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
@@ -23,6 +23,8 @@ import util.hashpassword;
 @WebServlet(name = "registerGoogleUser", urlPatterns = {"/registerGoogleUser"})
 public class registerGoogleUser extends HttpServlet {
 
+    util.EncryptionDecryptionAES encdyc = new util.EncryptionDecryptionAES();
+
     /**
      * Handles the HTTP <code>POST</code> method.
      *
@@ -34,20 +36,18 @@ public class registerGoogleUser extends HttpServlet {
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-        
+
         Connection connection = null;
         response.setContentType("text/html;charset=UTF-8");
-        try (PrintWriter out = response.getWriter()) {        
+        try (PrintWriter out = response.getWriter()) {
             String query;
             PreparedStatement statement;
-            
+
             Class.forName("org.apache.derby.jdbc.ClientDriver");
 
             // create a database connection
-            connection = DriverManager.getConnection("jdbc:derby://localhost:1527/security;user=security;password=security");          
-           
-            
-            
+            connection = DriverManager.getConnection("jdbc:derby://localhost:1527/security;user=security;password=security");
+
             String name = request.getParameter("name");
             String surname = request.getParameter("surname");
             String email = request.getParameter("email");
@@ -56,24 +56,22 @@ public class registerGoogleUser extends HttpServlet {
             System.out.println(surname);
             System.out.println(email);
 
-            
             query = "insert into userDB values(?, ?, ?, ?,?)";
             statement = connection.prepareStatement(query);
-            statement.setString(1, name);
-            statement.setString(2, ""); 
-            statement.setString(3, "normal");
-            statement.setString(4, email);
-            statement.setString(5, surname);
-            statement.executeUpdate(); 
+            statement.setString(1, encdyc.encrypt(name));
+            statement.setString(2, "");
+            statement.setString(3, encdyc.encrypt("normal"));
+            statement.setString(4, encdyc.encrypt(email));
+            statement.setString(5, encdyc.encrypt(surname));
+            statement.executeUpdate();
             HttpSession session = request.getSession();
             session.setAttribute("user", name);
-            //setting session to expiry in 30 mins
             session.setMaxInactiveInterval(30);
             javax.servlet.http.Cookie userName = new javax.servlet.http.Cookie("user", name);
             userName.setMaxAge(30 * 60);
             response.addCookie(userName);
-//            response.setHeader("Set-Cookie", "key=value; HttpOnly; SameSite=strict");
-            response.sendRedirect("userPage.jsp");
+            //response.setHeader("Set-Cookie", "key=value; HttpOnly; SameSite=strict");
+            response.sendRedirect("userPage");
 
         } catch (Exception e) {
             System.err.println(e.getMessage());

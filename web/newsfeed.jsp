@@ -30,6 +30,7 @@
             String user = null;
             if (session.getAttribute("user") == null) {
                 response.sendRedirect("index.jsp");
+
             } else {
                 user = (String) session.getAttribute("user");
             }
@@ -38,11 +39,15 @@
             Cookie[] cookies = request.getCookies();
             if (cookies != null) {
                 for (Cookie cookie : cookies) {
+                    //System.out.println("THE CHECK " +cookie.getValue());
+                    // System.out.println("THE CHECK " + cookie.getName().equals("user"));
                     if (cookie.getName().equals("user")) {
                         userName = cookie.getValue();
+                        System.out.println("THE CHECK " + userName);
                     }
                     if (cookie.getName().equals("JSESSIONID")) {
                         sessionID = cookie.getValue();
+                        System.out.println("THE CHECK " + sessionID);
                     }
                 }
             }

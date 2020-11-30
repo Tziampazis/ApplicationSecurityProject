@@ -29,21 +29,32 @@
     </style>
     <body>      
         <%
-         //allow access only if session exists
-         String user = null;
-         if(session.getAttribute("user") == null){
-                 response.sendRedirect("index.jsp");
-         }else user = (String) session.getAttribute("user");
-         String userName = null;
-         String sessionID = null;
-         Cookie[] cookies = request.getCookies(); 
-         if(cookies !=null){
-         for(Cookie cookie : cookies){
-                 if(cookie.getName().equals("user")) userName = cookie.getValue();
-                 if(cookie.getName().equals("JSESSIONID")) sessionID = cookie.getValue();
-         }
-         }
-         %>
+            //allow access only if session exists
+            String user = null;
+            if (session.getAttribute("user") == null) {
+                response.sendRedirect("index.jsp");
+
+            } else {
+                user = (String) session.getAttribute("user");
+            }
+            String userName = null;
+            String sessionID = null;
+            Cookie[] cookies = request.getCookies();
+            if (cookies != null) {
+                for (Cookie cookie : cookies) {
+                    //System.out.println("THE CHECK " +cookie.getValue());
+                    // System.out.println("THE CHECK " + cookie.getName().equals("user"));
+                    if (cookie.getName().equals("user")) {
+                        userName = cookie.getValue();
+                        System.out.println("THE CHECK " + userName);
+                    }
+                    if (cookie.getName().equals("JSESSIONID")) {
+                        sessionID = cookie.getValue();
+                        System.out.println("THE CHECK " + sessionID);
+                    }
+                }
+            }
+        %>
         <nav class="navbar navbar-light bg-light justify-content-between">
             <a class="navbar-brand">Application</a>
             <form class="form-inline" action="newsfeed" method="get">
@@ -56,7 +67,8 @@
         </nav>
         <div class="container">
             <div class="row">
-                Hi <c:out value="${userName}"/>, Your Session ID=<c:out value="${sessionID}"/>           
+                    Hi <%=userName%>, your session is <%=sessionID%>
+<!--                Hi <c:out value="${userName}"/>, Your Session ID=<c:out value="${sessionID}"/>           -->
             </div>
             <br>
             <div class="row">
